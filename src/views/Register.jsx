@@ -14,6 +14,7 @@ const Register = () => {
         getValues,
         formState: { errors }
     } = useForm()
+    
     const userContext = useContext(UserContext)
     const [ formError, setFormError ] = useState(null)
 
@@ -61,9 +62,12 @@ const Register = () => {
                         <p className="login-box-msg">Registrarse</p>
                         <form className="mb-2" onSubmit={handleSubmit(onSubmit)}>
                             { formError && 
-                            (<div className="alert alert-danger" role="alert">
-                                {formError}
-                            </div>)}
+                                (
+                                    <div className="alert alert-danger" role="alert">
+                                        {formError}
+                                    </div>
+                                )
+                            }
                             <AuthInput
                                 type="text"
                                 placeholder="Nombre completo"

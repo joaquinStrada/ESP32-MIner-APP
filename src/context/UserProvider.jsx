@@ -36,7 +36,6 @@ const UserProvider = ({ children }) => {
 
         window.localStorage.setItem('refreshToken', JSON.stringify(tokenStorage))
       }
-
       setTimeout(updateAccessToken, expiresInAccessToken - 500)
     } catch (err) {
       console.error(err)
