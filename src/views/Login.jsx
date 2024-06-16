@@ -34,6 +34,10 @@ const Login = () => {
         }
     }
 
+    if (userContext.IsLogged) {
+        window.location.href = '/'
+    }
+
     return (
         <div className="hold-transition login-page">
             <div className="login-box">

@@ -8,6 +8,8 @@ const UserProvider = ({ children }) => {
   const [RefreshToken, setRefreshToken] = useState(null)
   const [ExpiresInRefreshToken, setExpiresInRefreshToken] = useState(null)
   const [ExpiresInAccessToken, setExpiresInAccessToken] = useState(null)
+  const [IsLogged, setIsLogged] = useState(null)
+  const [User, setUser] = useState(null)
 
   const updateAccessToken = async () => {
     if (new Date().getTime() > ExpiresInRefreshToken) return
@@ -28,6 +30,7 @@ const UserProvider = ({ children }) => {
       setRefreshToken(refreshToken)
       setExpiresInRefreshToken(expiresInRefreshToken + new Date().getTime() - 500)
       setExpiresInAccessToken(expiresInAccessToken + new Date().getTime() - 500)
+      setIsLogged(!data.error)
 
       // Actualizamos el local storage en caso de estar habilitado
       if (window.localStorage.getItem('refreshToken')) {
@@ -40,6 +43,7 @@ const UserProvider = ({ children }) => {
       }
     } catch (err) {
       console.error(err)
+      setIsLogged(false)
     }
   }
 
@@ -64,16 +68,42 @@ const UserProvider = ({ children }) => {
   const getRefreshToken = () => {
     const refreshToken = window.localStorage.getItem('refreshToken') || window.sessionStorage.getItem('refreshToken')
     // Validamos que el token exista
-    if (!refreshToken) return
+    if (!refreshToken) {
+      setIsLogged(false)
+      return
+    }
 
     // Validamos que el token no haya expirado
     const dataToken = JSON.parse(refreshToken)
 
-    if (new Date().getTime() > dataToken.expiresIn) return
+    if (new Date().getTime() > dataToken.expiresIn) {
+      setIsLogged(false)
+      return
+    }
 
     // Seteamos el nuevo token
     setRefreshToken(dataToken.refreshToken)
     setExpiresInRefreshToken(dataToken.expiresIn)
+  }
+
+  const getUser = async () => {
+    try {
+      const { data } = await ApiUser.get('/', {
+        headers: {
+          Authorization: `Bearer ${AccessToken}`
+        }
+      })
+
+      if (data.error) return
+      
+      const { imageBig, imageSmall } = data.data
+      console.log({
+        imageBig,
+        imageSmall
+      });
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   useEffect(() => {
@@ -82,13 +112,14 @@ const UserProvider = ({ children }) => {
     } else if (RefreshToken && ExpiresInRefreshToken && ExpiresInAccessToken === null) {
       updateAccessToken()
     } else {
+      if (User === null) getUser()
       setTimeout(updateAccessToken, ExpiresInAccessToken - new Date().getTime())
     }
   })
 
   
   return (
-    <UserContext.Provider value={{ AccessToken, login }}>
+    <UserContext.Provider value={{ AccessToken, login, IsLogged }}>
       {children}
     </UserContext.Provider>
   )
