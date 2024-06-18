@@ -1,7 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
+import { UserContext } from '../context/UserProvider'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGauge } from '@fortawesome/free-solid-svg-icons'
 
 const Sidebar = () => {
+    const userContext = useContext(UserContext)
+
     return (
         <aside className="main-sidebar sidebar-dark-primary elevation-4">
             {/* Brand Logo */}
@@ -19,15 +24,18 @@ const Sidebar = () => {
                 {/* Sidebar user panel (optional) */}
                 <div className="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div className="image">
-                        <img
-                            src="dist/img/user2-160x160.jpg"
-                            className="img-circle elevation-2"
-                            alt="User Image"
-                        />
+                        {
+                            userContext.User?.imageSmall &&
+                            <img
+                                src={userContext.User.imageSmall}
+                                className='img-circle elevation-2'
+                                alt='Image user'
+                            />
+                        }
                     </div>
                     <div className="info">
                         <NavLink to="#" className="d-block">
-                            Alexander Pierce
+                            {userContext.User?.fullname}
                         </NavLink>
                     </div>
                 </div>
@@ -39,6 +47,12 @@ const Sidebar = () => {
                         role="menu"
                         data-accordion="false"
                     >
+                        <li className="nav-item">
+                            <NavLink to="/" className="nav-link">
+                                <FontAwesomeIcon icon={faGauge} className="nav-icon" />
+                                <p>Dashboard</p>
+                            </NavLink>
+                        </li>
                     </ul>
                 </nav>
                 {/* /.sidebar-menu */}

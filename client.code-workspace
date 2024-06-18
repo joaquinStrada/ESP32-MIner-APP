@@ -7,5 +7,7 @@
 			"path": "../AdminLTE-3.2.0"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "AdminLTE-3.2.0"
+	}
 }

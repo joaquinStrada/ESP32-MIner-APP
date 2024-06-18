@@ -1,5 +1,8 @@
 import { createContext, useState, useEffect } from 'react'
 import { ApiUser } from '../utils/api'
+import axios from 'axios'
+import { config } from '../utils/config'
+import UrlFile from '../utils/UrlFile'
 
 export const UserContext = createContext()
 
@@ -96,11 +99,28 @@ const UserProvider = ({ children }) => {
 
       if (data.error) return
       
+      // Obtenemos las imagenes
       const { imageBig, imageSmall } = data.data
-      console.log({
-        imageBig,
-        imageSmall
-      });
+      
+      const resImageBig = await axios.get(`${config.api.host}/users/profiles/${imageBig}`, {
+        headers: {
+          Authorization: `Bearer ${AccessToken}`
+        },
+        responseType: 'arraybuffer'
+      })
+
+      const resImageSmall = await axios.get(`${config.api.host}/users/profiles/${imageSmall}`, {
+        headers: {
+          Authorization: `Bearer ${AccessToken}`
+        },
+        responseType: 'arraybuffer'
+      })
+
+      // Codificamos las imagenes
+      data.data.imageBig = UrlFile(resImageBig)
+      data.data.imageSmall = UrlFile(resImageSmall)
+
+      setUser(data.data)
     } catch (err) {
       console.error(err)
     }
@@ -119,7 +139,7 @@ const UserProvider = ({ children }) => {
 
   
   return (
-    <UserContext.Provider value={{ AccessToken, login, IsLogged }}>
+    <UserContext.Provider value={{ AccessToken, login, IsLogged, User }}>
       {children}
     </UserContext.Provider>
   )
