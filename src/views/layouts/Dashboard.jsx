@@ -1,7 +1,7 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import ProtectedAuth from '../ProtectedAuth'
-import TemplateDashboard from '../../views/templates/Dashboard'
+import ProtectedAuth from '../../components/ProtectedAuth'
+import TemplateDashboard from '../templates/Dashboard'
 
 const Dashboard = () => {
   return (

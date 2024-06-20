@@ -1,3 +1,5 @@
+import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 
@@ -8,7 +10,7 @@ const Navbar = () => {
             <ul className="navbar-nav">
                 <li className="nav-item">
                     <NavLink to="#" className="nav-link" data-widget="pushmenu" role="button">
-                        <i className="fas fa-bars" />
+                        <FontAwesomeIcon icon={faBars} />
                     </NavLink>
                 </li>
             </ul>

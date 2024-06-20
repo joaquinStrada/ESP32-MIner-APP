@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { UserContext } from '../context/UserProvider'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGauge } from '@fortawesome/free-solid-svg-icons'
+import { faMicrochip } from '@fortawesome/free-solid-svg-icons/faMicrochip'
 
 const Sidebar = () => {
     const userContext = useContext(UserContext)
@@ -51,6 +52,10 @@ const Sidebar = () => {
                             <NavLink to="/" className="nav-link">
                                 <FontAwesomeIcon icon={faGauge} className="nav-icon" />
                                 <p>Dashboard</p>
+                            </NavLink>
+                            <NavLink to="/devices" className="nav-link">
+                                <FontAwesomeIcon icon={faMicrochip} className="nav-icon" />
+                                <p>Dispositivos</p>
                             </NavLink>
                         </li>
                     </ul>
