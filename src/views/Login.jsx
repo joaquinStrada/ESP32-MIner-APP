@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { formValidate } from '../utils/formValidate'
 import { ApiUser } from '../utils/api'
 import { UserContext } from '../context/UserProvider'
+import { faLock, faUser } from '@fortawesome/free-solid-svg-icons'
 
 const Login = () => {
     const {
@@ -58,7 +59,7 @@ const Login = () => {
                             <AuthInput
                                 type="text"
                                 placeholder="Usuario"
-                                icon="fas fa-user"
+                                icon={faUser}
                                 error={errors.user}
                                 {...register('user', {
                                     required: formValidate.required,
@@ -69,7 +70,7 @@ const Login = () => {
                             <AuthInput
                                 type="password"
                                 placeholder="Contraseña"
-                                icon="fas fa-lock"
+                                icon={faLock}
                                 error={errors.password}
                                 {...register('password', {
                                     required: formValidate.required,

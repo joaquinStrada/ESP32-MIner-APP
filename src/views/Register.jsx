@@ -6,6 +6,9 @@ import { formValidate } from '../utils/formValidate'
 import { config } from '../utils/config'
 import { ApiUser } from '../utils/api'
 import { UserContext } from '../context/UserProvider'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope'
+import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
 
 const Register = () => {
     const {
@@ -71,7 +74,7 @@ const Register = () => {
                             <AuthInput
                                 type="text"
                                 placeholder="Nombre completo"
-                                icon="fas fa-user"
+                                icon={faUser}
                                 error={errors.fullname}
                                 {...register('fullname', {
                                     required: formValidate.required,
@@ -82,7 +85,7 @@ const Register = () => {
                             <AuthInput
                                 type="text"
                                 placeholder="Correo"
-                                icon="fas fa-envelope"
+                                icon={faEnvelope}
                                 error={errors.email}
                                 {...register('email', {
                                     required: formValidate.required,
@@ -94,7 +97,7 @@ const Register = () => {
                             <AuthInput
                                 type="text"
                                 placeholder="Usuario"
-                                icon="fas fa-user"
+                                icon={faUser}
                                 error={errors.user}
                                 {...register('user', {
                                     required: formValidate.required,
@@ -105,7 +108,7 @@ const Register = () => {
                             <AuthInput
                                 type="password"
                                 placeholder="Contraseña"
-                                icon="fas fa-lock"
+                                icon={faLock}
                                 error={errors.password}
                                 {...register('password', {
                                     required: formValidate.required,
@@ -116,7 +119,7 @@ const Register = () => {
                             <AuthInput
                                 type="password"
                                 placeholder="Repetir Contraseña"
-                                icon="fas fa-lock"
+                                icon={faLock}
                                 error={errors.rePassword}
                                 {...register('rePassword', {
                                     required: formValidate.required,

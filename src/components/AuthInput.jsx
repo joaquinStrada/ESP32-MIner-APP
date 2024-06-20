@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const AuthInput = forwardRef(({ type, placeholder, icon, error, onChange, onBlur, name }, ref) => (
         <div className="mb-3">
@@ -14,7 +15,7 @@ const AuthInput = forwardRef(({ type, placeholder, icon, error, onChange, onBlur
                 />
                 <div className="input-group-append">
                     <div className="input-group-text">
-                        <span className={icon} />
+                        <FontAwesomeIcon icon={icon} />
                     </div>
                 </div>
             </div>
