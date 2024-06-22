@@ -31,8 +31,8 @@ const UserProvider = ({ children }) => {
 
       setAccessToken(accessToken)
       setRefreshToken(refreshToken)
-      setExpiresInRefreshToken(expiresInRefreshToken + new Date().getTime() - 500)
-      setExpiresInAccessToken(expiresInAccessToken + new Date().getTime() - 500)
+      setExpiresInRefreshToken(expiresInRefreshToken + new Date().getTime() - 2000)
+      setExpiresInAccessToken(expiresInAccessToken + new Date().getTime() - 2000)
       setIsLogged(!data.error)
 
       // Actualizamos el local storage en caso de estar habilitado
