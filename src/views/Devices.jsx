@@ -3,25 +3,87 @@ import { useForm } from 'react-hook-form'
 import { formValidate } from '../utils/formValidate'
 import InputDevice from '../components/InputDevice'
 import { MinersContext } from '../context/MinersProvider'
+import DataTable from '../components/DataTable'
+import RowMinerDevices from '../components/RowMinerDevices'
 
 const Devices = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    reset
   } = useForm()
-  const minersContext = useContext(MinersContext)
+  const { createMiner, Miners, CountMiners } = useContext(MinersContext)
   const [ formError, setFormError ] = useState(null)
+  const [ columnsTable, setColumnsTable ] = useState([
+    {
+      name: 'Id',
+      property: 'id',
+      enabled: true
+    },
+    {
+      name: 'Fecha de creacion',
+      property: 'createdAt',
+      enabled: true
+    },
+    {
+      name: 'Nombre',
+      property: 'name',
+      enabled: true
+    },
+    {
+      name: 'Descripcion',
+      property: 'description',
+      enabled: true
+    },
+    {
+      name: 'Serie',
+      property: 'serie',
+      enabled: true
+    },
+    {
+      name: 'Topico Base',
+      property: 'baseTopic',
+      enabled: true
+    },
+    {
+      name: 'Url de la Pool',
+      property: 'poolUrl',
+      enabled: true
+    },
+    {
+      name: 'Puerto de la Pool',
+      property: 'poolPort',
+      enabled: true
+    },
+    {
+      name: 'Direccion de la billetera',
+      property: 'walletAddress',
+      enabled: true
+    },
+    {
+      name: 'Ultima conexion',
+      property: 'conected',
+      enabled: true
+    },
+    {
+      name: 'Acciones',
+      property: 'actions',
+      enabled: true
+    }
+  ])
 
   const onSubmit = async data => {
     try {
-      const newMiner = await minersContext.createMiner(data)
+      const newMiner = await createMiner(data)
 
       if (newMiner) {
         setFormError({
           state: 'success',
           message: 'Minero creado satisfactoriamente'
         })
+
+        reset()
 
         setTimeout(() => setFormError(null), 5000)
       }
@@ -152,6 +214,14 @@ const Devices = () => {
         </form>
       </div>
 
+      <DataTable
+        title="Mineros"
+        columnsTable={columnsTable}
+        setColumnsTable={setColumnsTable}
+        data={Miners}
+        countData={CountMiners}
+        Row={RowMinerDevices}
+      />
     </div>
   )
 }

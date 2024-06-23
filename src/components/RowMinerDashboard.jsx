@@ -1,7 +1,7 @@
 import React from 'react'
 import formatDate from '../utils/formatDate'
 
-const RowMinerDashboard = ({ miner, columns }) => {
+const RowMinerDashboard = ({ data, columns }) => {
     return (
         <tr className="odd">
             {
@@ -9,17 +9,19 @@ const RowMinerDashboard = ({ miner, columns }) => {
                     if (column.enabled && column.name === 'Nombre') {
                         return (
                             <td className="dtr-control sorting_1" tabIndex={0} key={index}>
-                                {miner.name}
+                                {data.name}
                             </td>
                         )
                     } else if (column.enabled && column.name === 'Ultima conexion') {
                         return (
-                            <td key={index}>{formatDate(miner.conected)}</td>
+                            <td key={index}>{formatDate(data.conected)}</td>
                         )
                     } else if (column.enabled) {
                         return (
-                            <td key={index}>{miner[column.property]}{column.unit}</td>
+                            <td key={index}>{data[column.property]}{column.unit}</td>
                         )
+                    } else {
+                        return null
                     }
                 })
             }
