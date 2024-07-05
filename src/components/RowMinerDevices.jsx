@@ -3,7 +3,7 @@ import formatDate from '../utils/formatDate'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faXmark } from '@fortawesome/free-solid-svg-icons'
 
-const RowMinerDevices = ({ data, columns }) => {
+const RowMinerDevices = ({ data, columns, onEdit, onDelete }) => {
     return (
         <tr className="odd">
             {
@@ -25,10 +25,16 @@ const RowMinerDevices = ({ data, columns }) => {
                     } else if (column.enabled && column.property === 'actions') {
                         return (
                             <td key={index}>
-                                <button className="btn btn-primary d-block w-100 mb-3">
+                                <button 
+                                    className="btn btn-primary d-block w-100 mb-3"
+                                    onClick={() => onEdit(data.id)}
+                                >
                                     <FontAwesomeIcon icon={faPenToSquare} />
                                 </button>
-                                <button className="btn btn-danger d-block w-100">
+                                <button
+                                    className="btn btn-danger d-block w-100"
+                                    onClick={() => onDelete(data.id)}
+                                >
                                     <FontAwesomeIcon icon={faXmark} />
                                 </button>
                             </td>

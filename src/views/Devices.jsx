@@ -5,6 +5,7 @@ import InputDevice from '../components/InputDevice'
 import { MinersContext } from '../context/MinersProvider'
 import DataTable from '../components/DataTable'
 import RowMinerDevices from '../components/RowMinerDevices'
+import Swal from 'sweetalert2'
 
 const Devices = () => {
   const {
@@ -13,7 +14,7 @@ const Devices = () => {
     formState: { errors },
     reset
   } = useForm()
-  const { createMiner, Miners, CountMiners } = useContext(MinersContext)
+  const { createMiner, Miners, CountMiners, getMiner, deleteMiner: deleteMinerApi } = useContext(MinersContext)
   const [ formError, setFormError ] = useState(null)
   const [ columnsTable, setColumnsTable ] = useState([
     {
@@ -96,6 +97,53 @@ const Devices = () => {
       } else {
         console.error(err)
       }
+    }
+  }
+
+  const updateMiner = async id => {
+    console.log('Actualizando minero', id);
+  }
+
+  const deleteMiner = async id => {
+    try {
+      const miner = await getMiner(id)
+
+      // Verificamos si el usuario realmente quiere eliminar el minero
+      const { isConfirmed } = await Swal.fire({
+        title: 'Eliminar minero',
+        text: `¿Esta seguro de eliminar el minero: ${String(miner.data.name).toUpperCase()}?`,
+        icon: 'question',
+        confirmButtonText: 'Eliminar',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        customClass: {
+          confirmButton: 'btn btn-danger',
+          cancelButton: 'btn btn-secondary'
+        }
+      })
+
+      if (!isConfirmed) return
+
+      // Eliminamos el minero
+      const minerDeleted = await deleteMinerApi(id)
+
+      // Le avisamos al usuario que su minero fue eliminado
+      Swal.fire({
+        title: 'Minero eliminado',
+        text: minerDeleted.message,
+        icon: 'success',
+        timer: 3000,
+        timerProgressBar: true
+      })
+    } catch (err) {
+      console.error(err)
+      Swal.fire({
+        title: 'Error',
+        text: err.message,
+        icon: 'error',
+        timer: 3000,
+        timerProgressBar: true
+      })
     }
   }
 
@@ -221,6 +269,8 @@ const Devices = () => {
         data={Miners}
         countData={CountMiners}
         Row={RowMinerDevices}
+        onEdit={updateMiner}
+        onDelete={deleteMiner}
       />
     </div>
   )

@@ -42,6 +42,20 @@ const MinersProvider = ({ children }) => {
         }
     }
 
+    const getMiner = async id => {
+        try {
+            const { data } = await ApiMiner.get(`/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${AccessToken}`
+                }
+            })
+
+            return data
+        } catch (err) {
+            throw err
+        }
+    }
+
     const createMiner = async formData => {
         try {
             const { data } = await ApiMiner.post('/', formData, {
@@ -49,9 +63,6 @@ const MinersProvider = ({ children }) => {
                     Authorization: `Bearer ${AccessToken}`
                 }
             })
-
-
-            if (data.error) throw new Error(`Error: ${data.message}`)
 
             // agregamos el miner al array de miners y actualizamos el count miners
             const newMiner = {
@@ -75,13 +86,30 @@ const MinersProvider = ({ children }) => {
         }
     }
 
+    const deleteMiner = async id => {
+        try {
+           const { data } = await ApiMiner.delete(`/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${AccessToken}`
+                }
+            })
+
+            // Eliminamos el minero de la lista de mineros
+            setMiners(state => state.filter(miner => miner.id != data.idMiner))
+
+            return data
+        } catch (err) {
+            throw err
+        }
+    }
+
     useEffect(() => {
         if (Miners === null && AccessToken !== null) {
             getMiners()
         }
     })
     return (
-        <MinersContext.Provider value={{ Miners, CountMiners, createMiner }}>
+        <MinersContext.Provider value={{ Miners, CountMiners, createMiner, getMiner, deleteMiner }}>
             {children}
         </MinersContext.Provider>
     )

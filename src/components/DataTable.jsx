@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
-const DataTable = ({ title, columnsTable, setColumnsTable, data, countData, Row }) => {
+const DataTable = ({ title, columnsTable, setColumnsTable, data, countData, Row, onEdit, onDelete }) => {
 
     const [columnVisibility, setColumnVisibility] = useState(false)
     const [search, setSearch] = useState('')
@@ -175,6 +175,8 @@ const DataTable = ({ title, columnsTable, setColumnsTable, data, countData, Row 
                                                 data={row}
                                                 columns={columnsTable}
                                                 key={row.id}
+                                                onEdit={onEdit}
+                                                onDelete={onDelete}
                                             />
                                         ))
                                 }
