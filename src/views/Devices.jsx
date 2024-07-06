@@ -12,9 +12,10 @@ const Devices = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset
+    reset,
+    setValue
   } = useForm()
-  const { createMiner, Miners, CountMiners, getMiner, deleteMiner: deleteMinerApi } = useContext(MinersContext)
+  const { createMiner: createMinerApi, Miners, CountMiners, getMiner, deleteMiner: deleteMinerApi, updateMiner: updateMinerApi } = useContext(MinersContext)
   const [ formError, setFormError ] = useState(null)
   const [ columnsTable, setColumnsTable ] = useState([
     {
@@ -73,10 +74,19 @@ const Devices = () => {
       enabled: true
     }
   ])
+  const [ editId, setEditId ] = useState(null)
 
-  const onSubmit = async data => {
+  const onSubmit = data => {
+    if (editId) {
+      updateMiner(data)
+    } else {
+      createMiner(data)
+    }
+  }
+
+  const createMiner = async data => {
     try {
-      const newMiner = await createMiner(data)
+      const newMiner = await createMinerApi(data)
 
       if (newMiner) {
         setFormError({
@@ -84,9 +94,10 @@ const Devices = () => {
           message: 'Minero creado satisfactoriamente'
         })
 
-        reset()
-
-        setTimeout(() => setFormError(null), 5000)
+        setTimeout(() => {
+          setFormError(null)
+          reset()
+        }, 3000)
       }
     } catch (err) {
       if (err.response?.data?.error) {
@@ -100,11 +111,24 @@ const Devices = () => {
     }
   }
 
-  const updateMiner = async id => {
-    console.log('Actualizando minero', id);
+  const onUpdateMiner = async id => {
+    try {
+      const { data: miner } = await getMiner(id)
+
+      // Seteamos los valores en el formulario
+      setEditId(miner.id)
+      setValue('name', miner.name)
+      setValue('description', miner.description)
+      setValue('serie', miner.serie)
+      setValue('poolUrl', miner.poolUrl)
+      setValue('poolPort', miner.poolPort)
+      setValue('walletAddress', miner.walletAddress)
+    } catch (err) {
+      console.error(err)
+    }
   }
 
-  const deleteMiner = async id => {
+  const onDeleteMiner = async id => {
     try {
       const miner = await getMiner(id)
 
@@ -147,12 +171,40 @@ const Devices = () => {
     }
   }
 
+  const updateMiner = async data => {
+    try {
+      const editMiner = await updateMinerApi(editId, data)
+
+      if (editMiner) {
+        setFormError({
+          state: 'success',
+          message: 'Minero editado satisfactoriamente'
+        })
+
+        setTimeout(() => {
+          setFormError(null)
+          reset()
+          setEditId(null)
+        }, 3000)
+      }
+    } catch (err) {
+      if (err.response?.data?.error) {
+        setFormError({
+          state: 'danger',
+          message: err.response.data.message
+        })
+      } else {
+        console.error(err)
+      }
+    }
+  }
+
   return (
     <div>
-      <div className="card card-success">
+      <div className={`card card-${editId ? 'info' : 'success'}`}>
         <div className="card-header">
           <h3 className="card-title">
-            Agregar Dispositivos
+            {editId ? 'Editar' : 'Agregar'} Dispositivos
           </h3>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -212,7 +264,7 @@ const Devices = () => {
               id="password"
               error={errors.password}
               {...register('password', {
-                required: formValidate.required,
+                required: editId ? false : formValidate.required,
                 minLength: formValidate.minLength(8),
                 maxLength: formValidate.maxLength(20)
               })}
@@ -256,7 +308,7 @@ const Devices = () => {
           </div>
           <div className="card-footer d-flex justify-content-end">
             <button type="submit" className="btn btn-primary">
-              Agregar
+              {editId ? 'Editar' : 'Agregar'}
             </button>
           </div>
         </form>
@@ -269,8 +321,8 @@ const Devices = () => {
         data={Miners}
         countData={CountMiners}
         Row={RowMinerDevices}
-        onEdit={updateMiner}
-        onDelete={deleteMiner}
+        onEdit={onUpdateMiner}
+        onDelete={onDeleteMiner}
       />
     </div>
   )

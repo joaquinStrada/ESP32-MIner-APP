@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { UserContext } from './UserProvider'
 import { ApiMiner } from '../utils/api'
@@ -103,13 +104,39 @@ const MinersProvider = ({ children }) => {
         }
     }
 
+    const updateMiner = async (id, formData) => {
+        if (formData.password === '') {
+            delete formData.password
+        }
+
+        try {
+          const { data } = await ApiMiner.put(`/${id}`, formData, {
+            headers: {
+                Authorization: `Bearer ${AccessToken}`
+            }
+          })
+        
+          // Editamos el minero
+          const editMiner = [...Miners].find(miner => miner.id === id)
+          
+          for (const key in data.data) {
+            editMiner[key] = data.data[key]
+          }
+
+          setMiners(state => state.map(miner => miner.id == editMiner.id ? editMiner : miner))
+          return true
+        } catch (err) {
+            throw err
+        }
+    }
+
     useEffect(() => {
         if (Miners === null && AccessToken !== null) {
             getMiners()
         }
     })
     return (
-        <MinersContext.Provider value={{ Miners, CountMiners, createMiner, getMiner, deleteMiner }}>
+        <MinersContext.Provider value={{ Miners, CountMiners, createMiner, getMiner, deleteMiner, updateMiner }}>
             {children}
         </MinersContext.Provider>
     )
