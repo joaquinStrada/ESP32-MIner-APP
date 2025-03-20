@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import Card from '../components/Card'
-import { faChartSimple, faCheck, faHardDrive, faServer, faSignal, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faChartSimple, faCheck, faHardDrive, faSignal, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { faBitcoinSign } from '@fortawesome/free-solid-svg-icons/faBitcoinSign'
 import { MinersContext } from '../context/MinersProvider'
 import RowMinerDashboard from '../components/RowMinerDashboard'
@@ -15,27 +15,21 @@ const Dashboard = () => {
       enabled: true
     },
     {
-      name: 'HashRate',
-      property: 'hashRate',
+      name: 'Hashrate',
+      property: 'hashrate',
       unit: 'H/s',
       enabled: true
     },
     {
       name: 'Hashes validos',
-      property: 'validHashes',
+      property: 'validShares',
       unit: '',
       enabled: true
     },
     {
       name: 'Hashes invalidos',
-      property: 'invalidHashes',
+      property: 'invalidShares',
       unit: '',
-      enabled: true
-    },
-    {
-      name: 'CPU',
-      property: 'cpu',
-      unit: '%',
       enabled: true
     },
     {
@@ -45,8 +39,8 @@ const Dashboard = () => {
       enabled: true
     },
     {
-      name: 'Memoria flash',
-      property: 'memoryFlash',
+      name: 'Memoria Psram',
+      property: 'memoryPsram',
       unit: '%',
       enabled: true
     },
@@ -69,7 +63,48 @@ const Dashboard = () => {
       enabled: true
     },
   ])
-  const { Miners, CountMiners } = useContext(MinersContext)
+  const { Miners, CountMiners, connectMqtt } = useContext(MinersContext)
+  const [ ValidShares, setValidShares ] = useState(0)
+  const [ InvalidShares, setInvalidShares ] = useState(0)
+  const [ Hashrate, setHashrate ] = useState(0)
+  const [ Memory, setMemory ] = useState(0)
+  const [ MemoryPsram, setMemoryPsram ] = useState(0)
+  const [ Disk, setDisk ] = useState(0)
+  const [ Red, setRed ] = useState(0)
+
+  useEffect(() => {
+    connectMqtt()
+  })
+
+  useEffect(() => {
+    let validShares = 0
+    let invalidShares = 0
+    let hashrate = 0
+    let memory = 0
+    let memoryPsram = 0
+    let disk = 0
+    let red = 0
+
+    if (!Array.isArray(Miners)) return
+
+    for (const Miner of Miners) {
+      validShares += Miner.validShares
+      invalidShares += Miner.invalidShares
+      hashrate += Miner.hashrate
+      memory += Miner.memory
+      memoryPsram += Miner.memoryPsram
+      disk += Miner.disk
+      red += Miner.hashrate
+    }
+
+    setValidShares(validShares)
+    setInvalidShares(invalidShares)
+    setHashrate(hashrate)
+    setMemory(Math.round((memory / CountMiners) * 100) / 100)
+    setMemoryPsram(Math.round((memoryPsram / CountMiners) * 100) / 100)
+    setDisk(Math.round((disk / CountMiners) * 100) / 100)
+    setRed(Math.round((red / CountMiners) * 100) / 100)
+  }, [Miners, CountMiners])
 
   return (
     <>
@@ -79,24 +114,13 @@ const Dashboard = () => {
           color="bg-success"
           label="Hashes Validos"
           icon={faCheck}
-          value="0"
+          value={ValidShares}
         />
         <Card
           color="bg-danger"
           label="Hashes Invalidos"
           icon={faXmark}
-          value="0"
-        />
-        <Card
-          color="bg-warning"
-          label="CPU"
-          icon={faServer}
-          value={
-            <>
-              53
-              <sup className="font-size: 20px;">%</sup>
-            </>
-          }
+          value={InvalidShares}
         />
         <Card
           color="bg-info"
@@ -104,18 +128,18 @@ const Dashboard = () => {
           icon={faChartSimple}
           value={
             <>
-              53
+              {Memory}
               <sup className="font-size: 20px;">%</sup>
             </>
           }
         />
         <Card
           color="bg-danger"
-          label="Memoria Flash"
+          label="Memoria Psram"
           icon={faChartSimple}
           value={
             <>
-              53
+              {MemoryPsram}
               <sup className="font-size: 20px;">%</sup>
             </>
           }
@@ -126,7 +150,7 @@ const Dashboard = () => {
           icon={faHardDrive}
           value={
             <>
-              53
+              {Disk}
               <sup className="font-size: 20px;">%</sup>
             </>
           }
@@ -137,7 +161,7 @@ const Dashboard = () => {
           icon={faSignal}
           value={
             <>
-              53
+              {Red}
               <sup className="font-size: 20px;">%</sup>
             </>
           }
@@ -148,7 +172,7 @@ const Dashboard = () => {
           icon={faBitcoinSign}
           value={
             <>
-              53
+              {Hashrate}
               <sup className="font-size: 20px;">H/s</sup>
             </>
           }
