@@ -94,7 +94,7 @@ const Dashboard = () => {
       memory += Miner.memory
       memoryPsram += Miner.memoryPsram
       disk += Miner.disk
-      red += Miner.hashrate
+      red += Miner.red
     }
 
     setValidShares(validShares)
@@ -114,13 +114,25 @@ const Dashboard = () => {
           color="bg-success"
           label="Hashes Validos"
           icon={faCheck}
-          value={ValidShares}
+          value={
+            ValidShares > 1000000 ?
+              `${Math.round(ValidShares / 1000000)}MH`
+            : ValidShares > 1000 ?
+              `${Math.round(ValidShares / 1000)}KH`
+            : ValidShares
+          }
         />
         <Card
           color="bg-danger"
           label="Hashes Invalidos"
           icon={faXmark}
-          value={InvalidShares}
+          value={
+            InvalidShares > 1000000 ?
+              `${Math.round(InvalidShares / 1000000)}MH`
+            : InvalidShares > 1000 ?
+              `${Math.round(InvalidShares / 1000)}KH`
+            : InvalidShares
+          }
         />
         <Card
           color="bg-info"
@@ -172,8 +184,22 @@ const Dashboard = () => {
           icon={faBitcoinSign}
           value={
             <>
-              {Hashrate}
-              <sup className="font-size: 20px;">H/s</sup>
+              {
+                Hashrate > 1000000 ?
+                  Math.round(Hashrate/10000) / 100
+                : Hashrate > 1000 ?
+                  Math.round(Hashrate/10) / 100
+                : Hashrate
+              }
+              <sup className="font-size: 20px;">
+                {
+                  Hashrate > 1000000 ?
+                    `MH/s`
+                  : Hashrate > 1000 ?
+                    'KH/s'
+                  : 'H/s'
+                }
+              </sup>
             </>
           }
         />
