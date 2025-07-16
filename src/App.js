@@ -6,6 +6,7 @@ import Dashboard from './views/Dashboard'
 import LayoutDashboard from './views/layouts/Dashboard'
 import MinersProvider from './context/MinersProvider'
 import Devices from './views/Devices'
+import Miner from './views/Miner'
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
         }>
           <Route index element={<Dashboard />} />
           <Route path="/devices" element={<Devices />} />
+          <Route path="/dashboard/:minerid" element={<Miner />}/>
         </Route>
     </Routes>
   )

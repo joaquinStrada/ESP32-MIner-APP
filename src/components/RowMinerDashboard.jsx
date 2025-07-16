@@ -1,5 +1,6 @@
 import React from 'react'
 import formatDate from '../utils/formatDate'
+import { Link } from 'react-router-dom'
 
 const RowMinerDashboard = ({ data, columns }) => {
     return (
@@ -7,7 +8,9 @@ const RowMinerDashboard = ({ data, columns }) => {
             {
                 columns.map((column, index) => {
                     if (column.enabled && column.name === 'Nombre') {
-                        return <td className="dtr-control sorting_1" tabIndex={0} key={index}>{data.name}</td>
+                        return <td className="dtr-control sorting_1" tabIndex={0} key={index}>
+                            <Link to={`/dashboard/${data.id}`}>{data.name}</Link>
+                        </td>
                     } else if (column.enabled && column.name === 'Hashrate') {
                         if (data.hashrate > 1000000) {
                             return <td key={index}>{Math.round(data.hashrate / 10000) / 100}MH/s</td>
